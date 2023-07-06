@@ -402,7 +402,7 @@ class Tree{
                     else
                         rot = rotacao_dupla(balanco, pai);
                     if(i == 0)
-                        pai = rot;
+                        m_root = rot;
                     else {
                         Node * avo = caminho[i-1];
                         avo->right_son = rot;
@@ -415,7 +415,7 @@ class Tree{
                     else 
                         rot = rotacao(balanco, pai);
                     if(i == 0) // caso for a raiz da arvore
-                        pai = rot;
+                        m_root = rot;
                     else{ // cc
                         Node * avo = caminho[i-1];
                         avo->left_son = rot;
@@ -440,6 +440,7 @@ class Tree{
                     att_altura(true);
 
                 att_caminho(caminho);
+                att_altura_completa();
             }
             if(flag)
                 return value;
