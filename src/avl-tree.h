@@ -408,53 +408,59 @@ class Tree{
             }
         }
         /// Função auxiliar a insert. Retorna true, caso a inserção for em sucessida, e false caso contrario(Valor já está na arvore).
-        inline bool var_insert(Node * root, Node * newnode, int & h, bool & att){
+        inline bool var_insert(Node * root, Node * newnode){
             if(newnode->value == root->value){
                 return false;
             }
             // direita
             if(newnode->value > root->value){
                 if(!root->right_son){
-                    h = 1;
                     root->right_son = newnode;
                     root->nodes_right++;
                     root->heigth_rigth = newnode->heigth;
                     if(root->heigth_left < root->heigth_rigth){
-                        root->heigth = root->heigth_rigth + h;
-                        att = true;
+                        root->heigth = root->heigth_rigth + 1;
                     }
                     return true;
                 } else {
-                    if(var_insert(root->right_son, newnode, h, att)){
-                        if(att)
-                            root->heigth_rigth += h;
-                        if(root->heigth_left < root->heigth_rigth)
-                            root->heigth = root->heigth_rigth+ h;
+                    if(var_insert(root->right_son, newnode)){
                         root->nodes_right++;
+                        root->heigth_rigth++;
                     }
                 }
                 // esquerda
             } else if(newnode->value < root->value){
                 if(!root->left_son){
-                    h = 1;
                     root->left_son = newnode;
                     root->nodes_left++;
                     root->heigth_left = newnode->heigth;
                     if(root->heigth_left > root->heigth_rigth){
-                        root->heigth = root->heigth_left + h;
-                        att = true;
+                        root->heigth = root->heigth_left + 1;
                     }
                     return true;
                 } else {
-                    if(var_insert(root->left_son, newnode, h, att)){
-                        if(att)
-                            root->heigth_left += h;
-                        if(root->heigth_left > root->heigth_rigth)
-                            root->heigth = root->heigth_left + h;
+                    if(var_insert(root->left_son, newnode)){
                         root->nodes_left++;
+                        root->heigth_left++;
                     }
                 }
             }
+
+            int balanco = root->heigth_left - root->heigth_rigth;
+
+            if (balanco > 1 && newnode->value < root->left_son->value)
+            {
+                root = rotacao(1, root);
+            } else if (balanco < -1 && newnode->value > root->right_son->value)
+            {
+                root = rotacao(-1, root);
+            } else if (balanco > 1 && newnode->value > root->left_son->value) {
+                root->left_son = rotacao_dupla(1, root->left_son);
+            } else if (balanco < -1 && newnode->value < root->right_son->value) {
+                root->right_son = rotacao_dupla(-1, root->right_son);
+            } else {
+                return false;
+            }   
         }
         /// Insere um nó na arvore com o valor passado, caso já esteja na arvore retorna -1.
         inline int insert(const T & value){
@@ -465,21 +471,10 @@ class Tree{
                 m_root = newnode;
                 flag = true;
             } else {
-                int v = 0;
-                int& h = v;
-                bool x = false;
-                bool& att = x;
-                flag = var_insert(m_root, newnode, h, att);
-                /*
-                newnode = aux_insert(m_root, value);
-                if(newnode != m_root)
-                    return -1;
-                */
+                flag = var_insert(m_root, newnode);
             }
-            if(flag)
-                return value;
-            else
-                return -1;
+            
+            return flag ? value : -1;
         }
         
         Node getRoot() {
