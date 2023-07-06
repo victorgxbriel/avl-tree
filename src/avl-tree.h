@@ -273,13 +273,27 @@ class Tree{
             return var;
         }
         inline Node* rotacao_dupla(int balanco, Node *& node){
+            Node *neto = new Node;
             if(balanco < 0){
-                node->left_son = rotacao(1, node->left_son);
-                return rotacao(-1, node);
+                Node *filho = node->left_son;
+                neto = filho->right_son;
+                filho->right_son = neto->left_son;
+                node->left_son = neto->right_son;
+                neto->left_son = filho;
+                neto->right_son = node;
+                // node->left_son = rotacao(1, node->left_son);
+                // return rotacao(-1, node);
             } else {
-                node->right_son = rotacao(-1, node->right_son);
-                return rotacao(1, node);
+                Node *filho = node->right_son;
+                neto = filho->left_son;
+                filho->left_son = neto->right_son;
+                node->right_son = neto->left_son;
+                neto->left_son = node;
+                neto->right_son = filho;
+                // node->right_son = rotacao(-1, node->right_son);
+                // return rotacao(1, node);
             }
+            return neto;
         }
         /// Função recursiva auxiliar a atualiza altura.
         inline int altura(Node *& node){
@@ -377,22 +391,35 @@ class Tree{
         }
         inline void att_caminho(std::vector<Node *> & caminho){
             for(int i = caminho.size() - 1; i > -1; i--){
-                Node * var = caminho[i];
-                int balanco = var->heigth_rigth - var->heigth_left;
+                Node * rot = new Node;
+                Node * pai = caminho[i];
+                int balanco = pai->heigth_rigth - pai->heigth_left;
                 if(balanco == 2){
-                    Node * var2 = var->right_son;
-                    int balanco2 = var2->heigth_rigth - var->heigth_left;
+                    Node * filho = pai->right_son;
+                    int balanco2 = filho->heigth_rigth - filho->heigth_left;
                     if(balanco2 > 0)
-                        var = rotacao(balanco, var);
+                        rot = rotacao(balanco, pai);
                     else
-                        var = rotacao_dupla(balanco, var);
+                        rot = rotacao_dupla(balanco, pai);
+                    if(i == 0)
+                        pai = rot;
+                    else {
+                        Node * avo = caminho[i-1];
+                        avo->right_son = rot;
+                    }
                 } else if(balanco == -2){
-                    Node* var2 = var->left_son;
-                    int balanco2 = var2->heigth_rigth - var2->heigth_left;
+                    Node* filho = pai->left_son;
+                    int balanco2 = filho->heigth_rigth - filho->heigth_left;
                     if(balanco2 > 0)
-                        var = rotacao_dupla(balanco, var);
-                    else
-                        var = rotacao(balanco, var);
+                        rot = rotacao_dupla(balanco, pai);
+                    else 
+                        rot = rotacao(balanco, pai);
+                    if(i == 0) // caso for a raiz da arvore
+                        pai = rot;
+                    else{ // cc
+                        Node * avo = caminho[i-1];
+                        avo->left_son = rot;
+                    }
                 }
             }
         }
