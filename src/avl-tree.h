@@ -257,6 +257,28 @@ class Tree{
             }
             return str;
         }
+
+        /// Função para rotação simples
+        inline Node* rotacao(int balanco, Node *& node){
+            Node *var = new Node;
+            if(balanco < 0){ // rotacao a direita
+                var = node->left_son;
+                node->left_son = var->right_son;
+                var->right_son = node;
+            } else { // rotacao a esquerda
+                var = node->right_son; 
+                node->right_son = var->left_son;
+                var->left_son = node;
+            }
+            return var;
+        }
+        inline Node* rotacao_dupla(int balanco, Node *& node){
+            if(balanco < 0){
+
+            } else {
+
+            }
+        }
         /// Função recursiva auxiliar a atualiza altura.
         inline int altura(Node *& node){
             if(node == nullptr)
