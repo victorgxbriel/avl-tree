@@ -9,14 +9,7 @@
 #include "avl-tree.h"
 
 enum class function_e : short{
-        ENESIMO  = 0,
-        POSICAO,
-        MEDIANA,
-        MEDIA,
-        CHEIA,
-        COMPLETA,
-        PREORDEM,
-        IMPRIME,
+        IMPRIME = 0,
         REMOVA,
         BUSCA,
         INSERE,
@@ -25,14 +18,7 @@ enum class function_e : short{
 };
 
 void imprime_funcoes(){
-    std::cout << "ENESIMO N\n"
-              << "POSICAO N\n"
-              << "MEDIANA\n"
-              << "MEDIA N\n"
-              << "CHEIA\n"
-              << "COMPLETA\n"
-              << "PREORDEM\n"
-              << "IMPRIMA S\n"
+    std::cout << "IMPRIMA S\n"
               << "REMOVA N\n"
               << "BUSCAR N\n"
               << "INSIRA N\n"
@@ -60,21 +46,7 @@ auto STR_UPPERCASE = [](const std::string & s ) -> std::string{
 };
 
 function_e what_function(const std::string & str){
-    if(STR_UPPERCASE(str) == "ENESIMO")
-        return function_e::ENESIMO;
-    else if(STR_UPPERCASE(str) == "POSICAO")
-        return function_e::POSICAO;
-    else if(STR_UPPERCASE(str) == "MEDIANA")
-        return function_e::MEDIANA;
-    else if(STR_UPPERCASE(str) == "MEDIA")
-        return function_e::MEDIA;
-    else if(STR_UPPERCASE(str) == "CHEIA")
-        return function_e::CHEIA;
-    else if(STR_UPPERCASE(str) == "COMPLETA")
-        return function_e::COMPLETA;
-    else if(STR_UPPERCASE(str) == "PREORDEM")
-        return function_e::PREORDEM;
-    else if(STR_UPPERCASE(str) == "IMPRIMA")
+    if(STR_UPPERCASE(str) == "IMPRIMA")
         return function_e::IMPRIME;
     else if(STR_UPPERCASE(str) == "REMOVA")
         return function_e::REMOVA;
@@ -90,64 +62,6 @@ function_e what_function(const std::string & str){
 
 void result_function(function_e func, std::vector<std::string> comands, edb::Tree<int> & t, std::string & msg, int & result, double & media){
     switch(func){
-        case function_e::ENESIMO:
-            if(comands.size() != 2){
-                msg =  "Operação invalida, está faltando informação ou tem a mais";
-            } else {
-                int n = std::stoi(comands[1]);
-                result =  t.enesimo_elemento(n);
-                if(result == -1)
-                    msg = "O número n é menor do que 1 ou maior que o número de nós da arvore";
-                else
-                    msg = std::to_string(result);
-            }
-            break;
-        case function_e::POSICAO:
-            if(comands.size() != 2){
-                msg = "Operação invalida, está faltando informação ou tem a mais";
-            } else {
-                int value = std::stoi(comands[1]);
-                result = t.posicao(value);
-                if(result == -1)
-                    msg = "O valor não está na arvore";
-                else 
-                    msg = std::to_string(result);
-            }
-            break;
-        case function_e::MEDIANA:
-            result = t.mediana();
-            msg = std::to_string(result);
-            break;
-        case function_e::MEDIA:
-            if(comands.size() != 2){
-                msg = "Operação invalida, está faltando informação ou tem a mais";
-            } else {
-                int value = std::stoi(comands[1]);
-                media = t.media(value);
-                if(media == -1.0)
-                    msg = "Não existe nó na arvore com o valor passado";
-                else
-                    msg = std::to_string(media);
-            }
-            break;
-        case function_e::CHEIA:
-            result = t.eh_cheia();
-            if(result)
-                msg = "A árvore é cheia";
-            else 
-                msg = "A árvore não é cheia";
-            break;
-        case function_e::COMPLETA:
-            result = t.eh_completa();
-            if(result)
-                msg = "A árvore é completa";
-            else
-                msg = "A árvore não é completa";
-            break;
-        case function_e::PREORDEM:
-            //auto root = t.getRoot();
-            msg =  t.pre_ordem();
-            break;
         case function_e::IMPRIME:
             if(comands.size() != 2){
                 msg = "Operação invalida, está faltando informação ou tem a mais";
