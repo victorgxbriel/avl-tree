@@ -317,16 +317,23 @@ class Tree{
             else
                 m_root->heigth = m_root->heigth_rigth + 1;
         }
+        inline void addcaminho(std::vector<Node *> & caminho, Node * &no){
+            caminho.push_back(no);
+        }
         /// Função recursiva auxiliar a remoção
-        inline bool aux_remove(Node *& node, const T& value){
+        inline bool aux_remove(Node *& node, const T& value, std::vector<Node *> & caminho){
             if(node == nullptr){
                 return false;
             }
             if(value > node->value){
-                if(aux_remove(node->right_son, value))
+                addcaminho(caminho, node);
+                // caminho.push_back(&node);
+                if(aux_remove(node->right_son, value, caminho))
                     node->nodes_right--;
             } else if(value < node->value){
-                if(aux_remove(node->left_son, value))
+                addcaminho(caminho, node);
+                // caminho.push_back(&node);
+                if(aux_remove(node->left_son, value, caminho))
                     node->nodes_left--;
             } else {
                 if(node->left_son == nullptr and node->right_son == nullptr){
@@ -357,7 +364,7 @@ class Tree{
                     }
                     int vvalue = minrigh->value;
                     if(minrigh->right_son != nullptr)
-                        aux_remove(curr, minrigh->value);
+                        aux_remove(curr, minrigh->value, caminho);
                     else 
                         delete minrigh;
                     m_root->value = vvalue;
@@ -366,12 +373,34 @@ class Tree{
                 }
             }
         }
+        inline void att_caminho(std::vector<Node *> & caminho){
+            for(int i = caminho.size() - 1; i > -1; i--){
+                Node * var = caminho[i];
+                int balanco = var->heigth_rigth - var->heigth_left;
+                if(balanco == 2){
+                    Node * var2 = var->right_son;
+                    int balanco2 = var2->heigth_rigth - var->heigth_left;
+                    if(balanco2 > 0)
+                        var = rotacao(balanco, var);
+                    else
+                        var = rotacao_dupla(balanco, var);
+                } else if(balanco == -2){
+                    Node* var2 = var->left_son;
+                    int balanco2 = var2->heigth_rigth - var2->heigth_left;
+                    if(balanco2 > 0)
+                        var = rotacao_dupla(balanco, var);
+                    else
+                        var = rotacao(balanco, var);
+                }
+            }
+        }
         /// Remove o nó da arvore cujo valor passado, caso não esteja na arvore retorna -1.
         inline int remove(const T & value){
             bool flag;
+            std::vector<Node *> caminho;
             if(m_root != nullptr){
                 Node * node = m_root;
-                flag = aux_remove(m_root, value);
+                flag = aux_remove(m_root, value, caminho);
             }
             if(flag and m_root != nullptr){
                 if(value == m_root->value)
@@ -380,6 +409,8 @@ class Tree{
                     att_altura(false);
                 else 
                     att_altura(true);
+
+                att_caminho(caminho);
             }
             if(flag)
                 return value;
