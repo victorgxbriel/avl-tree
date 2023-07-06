@@ -260,11 +260,14 @@ class Tree{
 
         /// Função para rotação simples
         inline Node* rotacao(int balanco, Node *& node){
+            // node = 10
+            // node->left_son = 5
             Node *var = new Node;
             if(balanco < 0){ // rotacao a direita
-                var = node->left_son;
-                node->left_son = var->right_son;
-                var->right_son = node;
+                var = node->left_son; // var = 5
+                node->left_son = var->right_son; //var->right_son = null
+                var->right_son = node; //var->right_son = 10
+                node = var; //node = 5
             } else { // rotacao a esquerda
                 var = node->right_son; 
                 node->right_son = var->left_son;
@@ -477,21 +480,37 @@ class Tree{
                 }
             }
 
-            int balanco = root->heigth_left - root->heigth_rigth;
+            // int balanco = root->heigth_left - root->heigth_rigth;
 
-            if (balanco > 1 && newnode->value < root->left_son->value)
-            {
-                root = rotacao(1, root);
-            } else if (balanco < -1 && newnode->value > root->right_son->value)
-            {
-                root = rotacao(-1, root);
-            } else if (balanco > 1 && newnode->value > root->left_son->value) {
-                root->left_son = rotacao_dupla(1, root->left_son);
-            } else if (balanco < -1 && newnode->value < root->right_son->value) {
-                root->right_son = rotacao_dupla(-1, root->right_son);
-            } else {
-                return false;
-            }   
+            // if (balanco > 1 && newnode->value < root->left_son->value)
+            // {
+            //     root = rotacao(1, root);
+            // } else if (balanco < -1 && newnode->value > root->right_son->value)
+            // {
+            //     root = rotacao(-1, root);
+            // } else if (balanco > 1 && newnode->value > root->left_son->value) {
+            //     root->left_son = rotacao_dupla(1, root->left_son);
+            // } else if (balanco < -1 && newnode->value < root->right_son->value) {
+            //     root->right_son = rotacao_dupla(-1, root->right_son);
+            // } else {
+            //     return false;
+            // }   
+            int balanco = root->heigth_rigth - root->heigth_left;
+            if(balanco == 2){
+                Node * var2 = root->right_son;
+                int balanco2 = var2->heigth_rigth - root->heigth_left;
+                if(balanco2 > 0)
+                    root = rotacao(balanco, root);
+                else
+                    root = rotacao_dupla(balanco, root);
+            } else if(balanco == -2){
+                Node* var2 = root->left_son;
+                int balanco2 = var2->heigth_rigth - var2->heigth_left;
+                if(balanco2 > 0)
+                    root = rotacao_dupla(balanco, root);
+                else
+                    root = rotacao(balanco, root);
+            }
         }
         /// Insere um nó na arvore com o valor passado, caso já esteja na arvore retorna -1.
         inline int insert(const T & value){
